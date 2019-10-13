@@ -1,4 +1,5 @@
 # contact-form
+### Author: Herman Adema (http://ademafoto.nl/)
 WonderCMS plugin for adding a contact form to a WonderCMS website
 
 
