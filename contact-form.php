@@ -176,10 +176,10 @@ function contactfCONTENT() {
     }
 
     if($formulier) {
-        $final_content .= "<div id='message'><p class='message'>" . $_SESSION['SubmitMessage'] . "</p></div>";
+        $final_content .= "<div id='message'><p class='message'>" . ($_SESSION['SubmitMessage'] ?? '') . "</p></div>";
         unset($_SESSION['SubmitMessage']);
 
-        if($aFout) {
+        if($aFout ?? false) {
             $final_content .=  '<div id="errors">' . implode('<br>' ,$aFout) . '</div>';
         }
         $final_content .=  "<div id='containerform'>";
