@@ -1,9 +1,20 @@
-# contact-form
+# Contact form plugin for WonderXMS
 ### Author: Herman Adema (http://ademafoto.nl/)
+
+## Description
 WonderCMS plugin for adding a contact form to a WonderCMS website
 
 
-### Put the code below in your theme.php to display the contact form on all pages.
+# Instructions
+
+## 1. Install plugin
+1. Login to your WonderCMS website.
+2. Click "Settings" and click "Plugins".
+3. Find plugin in the list and click "install".
+4. Plugin will be automatically activated.
+
+
+## 2. Put the code below in your custom theme.php to display the contact form on all pages.
  - **Important: make sure to change your.email@example.com to your actual email**
 
 ```
@@ -20,10 +31,9 @@ WonderCMS plugin for adding a contact form to a WonderCMS website
 	</div>
 </div>
 ```
-Save the changed theme.php and that's it!
+Save the changed theme.php.
 
-
-### How to display form on a specific page
+## 3. Display form on a specific page
 1. Change 'the name of the page' in the code below and add it to your theme.php (to show it on that specific page)
 2. Make sure 'the name of the page' exists.
 
@@ -43,3 +53,7 @@ Save the changed theme.php and that's it!
 	</div>
 <?php endif ?>
 ```
+
+
+## Preview
+![Plugin preview](/preview.jpg)
