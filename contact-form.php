@@ -6,8 +6,8 @@
  *
  * @author Thijs Ferket www.ferket.net
  * @forked and adapted by Herman Adema  
- * @forked by Robert Isoski @robiso
  * @forked by Jeremy Czajkowski
+ * @forked by Robert Isoski @robiso
  * @version 3.0.0
  */
 
@@ -165,12 +165,12 @@ function contactfCONTENT() {
             else {
                 $sent = false;
             }                
-            header ('Location: ' . $_SERVER['REQUEST_URI']);
-            
+            // header ('Location: ' . $_SERVER['REQUEST_URI']);
             if ($sent) {
-               echo $i18n['result_sent'];
+                echo "<h4 class='text-center'<br /><br />" . $i18n['result_sent'] . "</h4>";
             } else {
-               echo $i18n['result_failed'];
+                echo "<h4 class='text-center'><br /><br />" . $i18n['result_failed'] . "</h4>";
+
             }
         }
     }
