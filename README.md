@@ -17,7 +17,7 @@ WonderCMS plugin for adding a contact form to
 3. Find plugin in the list and click "install".
 4. Plugin will be automatically activated.
 
-## 2. In the installed plugin directory, open "config"
+## 2. In the installed plugin directory, open "config" (via FTP or SSH)
  - ** Change your.email@example.com to your actual email**
  - ** Change "home" to page where you want the contact form displayed.
 
@@ -30,16 +30,12 @@ Save changes to config file.
 
 
 ## 3. Put the code below in your custom theme.php to display the contact on the page specified in the config file
- - **Important: make sure to change your.email@example.com to your actual email**
 
 ```
-
-<div class="container">
-	<div class="col-xs-12 col-md-6 col-md-offset-3">
-		<div id="contactform" class="grayFont">
-       		  	<?php echo contact_form(); ?>
-		</div>
-	</div>
-</div>
+<?php echo contact_form(); ?>
 ```
 Save the changed theme.php.
+
+
+### Additional notes
+If you're not using a custom theme, create a copy of your current theme and add the contact_form() inside the copied theme. This is to avoid a new theme update overriding your contact form.
