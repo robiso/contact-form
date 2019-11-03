@@ -38,7 +38,7 @@ Save the changed theme.php.
 2. Make sure 'the name of the page' exists.
 
 ```
-<?php if (wCMS::$currentPage == 'the name of the page'): ?>
+<?php if ($Wcms->currentPage == 'the name of the page'): ?>
 	<?php
 		global $contact_form_email;
 		$contact_form_email = "your.email@example.com";
