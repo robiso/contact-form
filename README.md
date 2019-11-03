@@ -2,7 +2,7 @@
 ### Author: Herman Adema (http://ademafoto.nl/)
 
 ## Description
-WonderCMS plugin for adding a contact form to a WonderCMS website.
+Plugin for adding a contact form to a WonderCMS website.
 
 ## Preview
 ![Plugin preview](/preview.jpg)
