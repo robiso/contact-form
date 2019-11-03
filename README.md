@@ -1,4 +1,4 @@
-# Contact form plugin for WonderXMS
+# Contact form plugin for WonderCMS
 ### Author: Herman Adema (http://ademafoto.nl/)
 
 ## Description
