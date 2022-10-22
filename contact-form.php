@@ -5,7 +5,7 @@
  * It allows to add and manage additional contents on a page.
  *
  * @author Thijs Ferket www.ferket.net
- * @forked and adapted by Herman Adema  
+ * @forked and adapted by Herman Adema
  * @forked by Jeremy Czajkowski
  * @forked by Robert Isoski @robiso
  * @version 3.0.0
@@ -23,13 +23,31 @@ $configuration = parse_ini_file('config');
 define('CONTACT_FORM_PAGE', $configuration ['page']);
 define('CONTACT_FORM_EMAIL', $configuration ['emailAddress']);
 define('CONTACT_FORM_LANG', $configuration ['language']);
+define('CONTACT_FORM_RECAPTCHA_SITE_KEY', $configuration ['reCaptchaSiteKey']);
 
 $Wcms->addListener('css', 'contactfCSS');
+
+if (CONTACT_FORM_RECAPTCHA_SITE_KEY) {
+  $Wcms->addListener('js', 'recaptchaJS');
+}
 
 function contactfCSS($args) {
     global $Wcms;
 
     $script = '<link rel="stylesheet" href="'.$Wcms->url("plugins/contact-form/css/style.css").'" type="text/css">';
+    $args[0].=$script;
+    return $args;
+}
+
+function recaptchaJS($args) {
+    global $Wcms;
+
+    $script = '<script src="https://www.google.com/recaptcha/api.js?render='.CONTACT_FORM_RECAPTCHA_SITE_KEY.'"></script>';
+    $script .= '<script>
+   function onSubmit(token) {
+     document.getElementById("wonder-cms-form").submit();
+   }
+ </script>';
     $args[0].=$script;
     return $args;
 }
@@ -164,7 +182,7 @@ function contactfCONTENT() {
             }
             else {
                 $sent = false;
-            }                
+            }
             // header ('Location: ' . $_SERVER['REQUEST_URI']);
             if ($sent) {
                 echo "<h4 class='text-center'<br /><br />" . $i18n['result_sent'] . "</h4>";
@@ -184,7 +202,7 @@ function contactfCONTENT() {
         }
         $final_content .=  "<div id='containerform'>";
 
-        $final_content .=  "<form method='post' action=''>";
+        $final_content .=  "<form id='wonder-cms-form' method='post' action=''>";
         $final_content .=  "<p>";
         $final_content .=  "<div class='form-group'><input type='text' placeholder='$i18n[name]' id='name' name='name' maxlength='30'";
         if(isset($fout['input']['name'])) { $final_content .=  "class='fout'"; } $final_content .=  "value='";
@@ -202,7 +220,11 @@ function contactfCONTENT() {
         if(isset($fout['input']['message'])) { $final_content .=  "class='fout'"; } $final_content .=  " cols='31' rows='10'>";
         if (!empty($message)) { $final_content .=  stripslashes($message); } $final_content .=  "</textarea></div>";
 
-        $final_content .=  "<input type='submit' id='submitForm' class='btn btn-primary btn-block' name='submitForm' value='$i18n[submit]' />";
+        if (CONTACT_FORM_RECAPTCHA_SITE_KEY) {
+          $recaptcha_btn_attr = "data-sitekey='".CONTACT_FORM_RECAPTCHA_SITE_KEY."' data-callback='onSubmit' data-action='submit'";
+        }
+
+        $final_content .=  "<input type='submit' id='submitForm' class='btn btn-primary btn-block' name='submitForm' value='$i18n[submit]' ".$recaptcha_btn_attr." />";
         $final_content .=  "</p>";
         $final_content .=  "</form>";
         $final_content .=  "</div>";
