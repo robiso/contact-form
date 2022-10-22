@@ -219,7 +219,8 @@ function contactfCONTENT() {
         $final_content .=  "<div class='form-group'><textarea placeholder='$i18n[message]' id='message' name='message'";
         if(isset($fout['input']['message'])) { $final_content .=  "class='fout'"; } $final_content .=  " cols='31' rows='10'>";
         if (!empty($message)) { $final_content .=  stripslashes($message); } $final_content .=  "</textarea></div>";
-
+        
+        $recaptcha_btn_attr = ' ';
         if (CONTACT_FORM_RECAPTCHA_SITE_KEY) {
           $recaptcha_btn_attr = "data-sitekey='".CONTACT_FORM_RECAPTCHA_SITE_KEY."' data-callback='onSubmit' data-action='submit'";
         }
