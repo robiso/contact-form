@@ -1,4 +1,6 @@
 [general]
 page=home
 emailAddress=YOUR.EMAIL@EXAMPLE.COM
+reCaptchaSiteKey=YOUR_RECAPTCHA_SITE_KEY
+reCaptchaSecretKey=YOUR_RECAPTCHA_SECRET_KEY
 language=en_US

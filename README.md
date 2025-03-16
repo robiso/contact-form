@@ -16,22 +16,16 @@ Before editing any files, create a copy of your current theme and set it as defa
 2. Click "Settings" and click "Plugins".
 3. Find plugin in the list and click "install".
 4. Plugin will be automatically activated.
+5. Open Settings - Security and enter your email address and specify on which page you want to display the contact form on.
 
-## 2. In the installed plugin directory, open the "config" file and change the below values
- - ** Change "your.email@example.com" to your actual email**
- - ** Change "home" to page where you want the contact form displayed
-
-```
-emailAddress=your.email@example.com
-page=home
-
-```
-Save changes to config file.
-
-
-## 3. Put the code below in your custom theme.php to display the contact on the page specified in the config file
+## 2. Put the code below in your custom theme.php to display the contact on the page specified in the config file
 
 ```
 <?php echo contact_form(); ?>
 ```
 Save changes to theme.php.
+
+## 3. (Optional) Using Google reCaptcha v2
+1. Setup your reCaptcha v2 (I'm not a robot) API keys: https://www.google.com/recaptcha/admin/create
+2. Enter your API keys in Settings - Security.
+3. Your form will now use reCaptcha.
