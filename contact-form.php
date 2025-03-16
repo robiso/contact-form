@@ -8,7 +8,7 @@
  * @forked and adapted by Herman Adema  
  * @forked by Jeremy Czajkowski
  * @forked by Robert Isoski @robiso
- * @version 3.5.0
+ * @version 3.5.3
  */
 
 global $Wcms;
@@ -59,6 +59,7 @@ function populateDefaultValues() {
     $defaultSiteKey = 'YOUR_RECAPTCHA_SITE_KEY';
     $defaultSecretKey = 'YOUR_RECAPTCHA_SECRET_KEY';
     $defaultPage = 'home';
+    $defaultLanguage = 'en_US'; // Default language
 
     // Check and populate contactFormEmail
     $email = $Wcms->get('config', 'contactFormEmail');
@@ -83,8 +84,13 @@ function populateDefaultValues() {
     if (empty($page) || is_object($page)) {
         $Wcms->set('config', 'contactFormPage', $defaultPage);
     }
-}
 
+    // Check and populate contactFormLanguage
+    $language = $Wcms->get('config', 'contactFormLanguage');
+    if (empty($language) || is_object($language)) {
+        $Wcms->set('config', 'contactFormLanguage', $defaultLanguage);
+    }
+}
 
 // Populate default values on plugin initialization
 populateDefaultValues();
@@ -150,23 +156,55 @@ function contactfSettings($args) {
         $Wcms->set('config', 'contactFormPage', $page); // Save the default value to the database
     }
 
+    // Get the current language from the database
+    $language = $Wcms->get('config', 'contactFormLanguage');
+
+    // If the language is not set, use the default value (only once during initialization)
+    if (empty($language) || $language === 'en_US') {
+        $language = 'en_US'; // Default value
+        $Wcms->set('config', 'contactFormLanguage', $language); // Save the default value to the database
+    }
+
+    // Get all available language files
+    $languagesDir = __DIR__ . '/languages';
+    $languageFiles = glob($languagesDir . '/*.ini');
+    $languageOptions = [];
+
+    foreach ($languageFiles as $file) {
+        $languageCode = basename($file, '.ini'); // Extract language code from file name
+        $languageOptions[] = $languageCode; // Add to the list of available languages
+    }
+
+    // Generate the language dropdown options
+    $languageDropdown = '';
+    foreach ($languageOptions as $option) {
+        $selected = ($option === $language) ? 'selected' : ''; // Mark the current language as selected
+        $languageDropdown .= "<option value='$option' $selected>$option</option>";
+    }
+
     // Add a new field in the Security section of the WonderCMS settings modal
     $settingsForm = <<<EOD
-<p class="subTitle">Contact Form Email Address</p>
+<p class="subTitle">Contact form - email</p>
 <div class="change">
     <div data-target="config" id="contactFormEmail" class="editText">$email</div>
 </div>
-<p class="subTitle">reCAPTCHA Site Key (optional)</p>
+<p class="subTitle">Contact form - reCAPTCHA Site Key (optional)</p>
 <div class="change">
     <div data-target="config" id="contactFormReCaptchaSiteKey" class="editText">$reCaptchaSiteKey</div>
 </div>
-<p class="subTitle">reCAPTCHA Secret Key (optional)</p>
+<p class="subTitle">Contact form - reCAPTCHA Secret Key (optional)</p>
 <div class="change">
     <div data-target="config" id="contactFormReCaptchaSecretKey" class="editText">$reCaptchaSecretKey</div>
 </div>
-<p class="subTitle">Page where contact form is displayed</p>
+<p class="subTitle">Contact form - page where form is displayed</p>
 <div class="change">
     <div data-target="config" id="contactFormPage" class="editText">$page</div>
+</div>
+<p class="subTitle">Contact form - language</p>
+<div class="change">
+    <select data-target="config" id="contactFormLanguage" class="wform-control">
+        $languageDropdown
+    </select>
 </div>
 EOD;
 
@@ -214,6 +252,57 @@ EOD;
         $args[0] .= $script;
     }
 
+    // Add JavaScript to handle the language dropdown
+    $script = <<<EOD
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const languageDropdown = document.getElementById('contactFormLanguage');
+    if (languageDropdown) {
+        languageDropdown.addEventListener('change', function() {
+            const value = this.value;
+            const id = this.id;
+            const target = this.getAttribute('data-target');
+            const token = document.querySelector('input[name="token"]').value;
+
+            // Create a form and submit it to save the selected value
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = window.location.href;
+
+            const fieldnameInput = document.createElement('input');
+            fieldnameInput.type = 'hidden';
+            fieldnameInput.name = 'fieldname';
+            fieldnameInput.value = id;
+
+            const contentInput = document.createElement('input');
+            contentInput.type = 'hidden';
+            contentInput.name = 'content';
+            contentInput.value = value;
+
+            const targetInput = document.createElement('input');
+            targetInput.type = 'hidden';
+            targetInput.name = 'target';
+            targetInput.value = target;
+
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = 'token';
+            tokenInput.value = token;
+
+            form.appendChild(fieldnameInput);
+            form.appendChild(contentInput);
+            form.appendChild(targetInput);
+            form.appendChild(tokenInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        });
+    }
+});
+</script>
+EOD;
+    $args[0] .= $script;
+
     return $args;
 }
 
@@ -222,8 +311,17 @@ function contactfCONTENT() {
 
     $emailadr = CONTACT_FORM_EMAIL;
 
-    // Internationalization
-    $i18n = parse_ini_file('languages/' . CONTACT_FORM_LANG . '.ini');
+    // Get the selected language from the database
+    $language = $Wcms->get('config', 'contactFormLanguage') ?? 'en_US';
+
+    // Load the correct language file
+    $languageFile = __DIR__ . '/languages/' . $language . '.ini';
+    if (file_exists($languageFile)) {
+        $i18n = parse_ini_file($languageFile);
+    } else {
+        // Fallback to English if the selected language file doesn't exist
+        $i18n = parse_ini_file(__DIR__ . '/languages/en_US.ini');
+    }
 
     // Fallback for missing language keys
     if (!isset($i18n['recaptcha_empty'])) {
