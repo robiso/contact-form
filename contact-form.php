@@ -8,7 +8,7 @@
  * @forked and adapted by Herman Adema  
  * @forked by Jeremy Czajkowski
  * @forked by Robert Isoski @robiso
- * @version 3.1.3
+ * @version 3.5.2
  */
 
 global $Wcms;
