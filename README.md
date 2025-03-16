@@ -11,6 +11,9 @@ Plugin for adding a contact form to a WonderCMS website.
 # Instructions
 Before editing any files, create a copy of your current theme and set it as default. Do all the changes in the copied theme. **This will help you avoid a theme update overriding your contact form.**
 
+# Important
+- If you are coming from an older version, please check your WonderCMS Security Settings to ensure your correct email address is added.
+
 ## 1. Install plugin
 1. Login to your WonderCMS website.
 2. Click "Settings" and click "Plugins".
