@@ -8,7 +8,7 @@
  * @forked and adapted by Herman Adema  
  * @forked by Jeremy Czajkowski
  * @forked by Robert Isoski @robiso
- * @version 3.5.2
+ * @version 3.5.0
  */
 
 global $Wcms;
@@ -58,6 +58,7 @@ function populateDefaultValues() {
     $defaultEmail = 'YOUR.EMAIL@EXAMPLE.COM';
     $defaultSiteKey = 'YOUR_RECAPTCHA_SITE_KEY';
     $defaultSecretKey = 'YOUR_RECAPTCHA_SECRET_KEY';
+    $defaultPage = 'home';
 
     // Check and populate contactFormEmail
     $email = $Wcms->get('config', 'contactFormEmail');
@@ -76,17 +77,25 @@ function populateDefaultValues() {
     if (empty($secretKey) || is_object($secretKey)) {
         $Wcms->set('config', 'contactFormReCaptchaSecretKey', $defaultSecretKey);
     }
+
+    // Check and populate contactFormPage
+    $page = $Wcms->get('config', 'contactFormPage');
+    if (empty($page) || is_object($page)) {
+        $Wcms->set('config', 'contactFormPage', $defaultPage);
+    }
 }
+
 
 // Populate default values on plugin initialization
 populateDefaultValues();
 
 // Define constants
-define('CONTACT_FORM_PAGE', $configuration['page']);
+define('CONTACT_FORM_PAGE', $Wcms->get('config', 'contactFormPage') ?? $configuration['page'] ?? 'home');
 define('CONTACT_FORM_EMAIL', $Wcms->get('config', 'contactFormEmail') ?? 'YOUR.EMAIL@EXAMPLE.COM');
 define('CONTACT_FORM_RECAPTCHA_SITE_KEY', $Wcms->get('config', 'contactFormReCaptchaSiteKey') ?? 'YOUR_RECAPTCHA_SITE_KEY');
 define('CONTACT_FORM_RECAPTCHA_SECRET_KEY', $Wcms->get('config', 'contactFormReCaptchaSecretKey') ?? 'YOUR_RECAPTCHA_SECRET_KEY');
 define('CONTACT_FORM_LANG', $configuration['language']);
+
 
 // Add listener for CSS
 $Wcms->addListener('css', 'contactfCSS');
@@ -132,6 +141,15 @@ function contactfSettings($args) {
         $Wcms->set('config', 'contactFormReCaptchaSecretKey', $reCaptchaSecretKey); // Save the default value to the database
     }
 
+    // Get the current page from the database
+    $page = $Wcms->get('config', 'contactFormPage');
+
+    // If the page is not set, use the default value (only once during initialization)
+    if (empty($page) || $page === 'home') {
+        $page = 'home'; // Default value
+        $Wcms->set('config', 'contactFormPage', $page); // Save the default value to the database
+    }
+
     // Add a new field in the Security section of the WonderCMS settings modal
     $settingsForm = <<<EOD
 <p class="subTitle">Contact Form Email Address</p>
@@ -145,6 +163,10 @@ function contactfSettings($args) {
 <p class="subTitle">reCAPTCHA Secret Key (optional)</p>
 <div class="change">
     <div data-target="config" id="contactFormReCaptchaSecretKey" class="editText">$reCaptchaSecretKey</div>
+</div>
+<p class="subTitle">Page where contact form is displayed</p>
+<div class="change">
+    <div data-target="config" id="contactFormPage" class="editText">$page</div>
 </div>
 EOD;
 
@@ -379,4 +401,3 @@ function contact_form() {
     }
     return $result;
 }
-   
