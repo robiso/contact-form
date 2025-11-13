@@ -427,7 +427,7 @@ function contactfCONTENT() {
 
             // Use the admin email as the From address
             $fromEmail = $cfg['email']; // Admin email from the plugin configuration
-            $fromName = "Website Title"; // Replace with your website name
+            $fromName = $Wcms->get('config', 'siteTitle');  // This get the site title so you don't have to edit
 
             // Improved email headers
             $headers = "From: " . $fromName . " <" . $fromEmail . ">\r\n";
